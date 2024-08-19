@@ -10,6 +10,7 @@ import { Service } from './services/entities';
 import { BarberController } from './barber/barber.controller';
 import { BarberService } from './barber/barber.service';
 import { AdminController } from './admin/admin.controller';
+import { AdminService } from './admin/admin.service';
 
 @Module({
   imports: [
@@ -22,6 +23,6 @@ import { AdminController } from './admin/admin.controller';
     TypeOrmModule.forFeature([Admin, Client, Service, Barber, Appointment]),
   ],
   controllers: [AppController, BarberController, AdminController],
-  providers: [AppService, BarberService],
+  providers: [AppService, BarberService, AdminService],
 })
 export class AppModule {}
