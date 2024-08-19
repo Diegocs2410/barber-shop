@@ -1,9 +1,11 @@
+import { Appointment } from 'src/appointments/entities';
 import {
   Column,
   CreateDateColumn,
   Entity,
   ObjectId,
   ObjectIdColumn,
+  OneToMany,
   UpdateDateColumn,
 } from 'typeorm';
 
@@ -38,4 +40,7 @@ export class Barber {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany(() => Appointment, appointment => appointment.barber)
+  appointments: Appointment[];
 }

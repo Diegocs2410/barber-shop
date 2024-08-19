@@ -1,4 +1,5 @@
-import { Column, Entity, ObjectId, ObjectIdColumn } from 'typeorm';
+import { Barber } from 'src/barber/entities';
+import { Column, Entity, ManyToOne, ObjectId, ObjectIdColumn } from 'typeorm';
 
 @Entity()
 export class Appointment {
@@ -17,8 +18,8 @@ export class Appointment {
   @Column()
   clientName: string;
 
-  @Column()
-  barberID: string;
+  @ManyToOne(() => Barber, barber => barber.appointments)
+  barber: Barber;
 
   @Column()
   state: string;
