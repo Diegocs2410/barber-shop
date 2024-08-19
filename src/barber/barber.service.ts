@@ -1,39 +1,62 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { MongoRepository, ObjectId } from 'typeorm';
 import { Barber } from './entities';
-import { ObjectId, Repository } from 'typeorm';
 
 @Injectable()
 export class BarberService {
   constructor(
-    @InjectRepository(Barber) private barberRepository: Repository<Barber>,
+    @InjectRepository(Barber) private barberRepository: MongoRepository<Barber>,
   ) {}
 
   findAll(): Promise<Barber[]> {
     return this.barberRepository.find();
   }
 
-  findOne(id: ObjectId): Promise<Barber> {
-    return this.barberRepository.findOne({
-      where: { id },
-    });
+  findOne(id: string): Promise<Barber> {
+    return this.barberRepository.findOneBy(id);
   }
 
-  create(barber: Barber): Promise<Barber> {
-    if (!barber.name || !barber.email) {
-      throw new InternalServerErrorException('Name and email are required');
+  async create(barber: Barber): Promise<Barber> {
+    if (!barber.name || !barber.email || !barber.password) {
+      throw new InternalServerErrorException('Missing required fields');
     }
 
-    return this.barberRepository.save(barber);
+    try {
+      const barberExists = await this.barberRepository.findOne({
+        where: { email: barber.email },
+      });
+      if (barberExists) {
+        throw new InternalServerErrorException('Email already in use');
+      }
+      return this.barberRepository.save(barber);
+    } catch (error) {
+      throw new InternalServerErrorException('Email already in use');
+    }
   }
 
-  async update(id: ObjectId, barber: Barber): Promise<void> {
-    // Find the barber with the given id and update it
-    await this.barberRepository.update(id, barber);
+  async update(id: ObjectId, barber: Barber): Promise<string> {
+    try {
+      const barberExists = await this.barberRepository.findOneBy(id);
+      if (!barberExists) {
+        throw new InternalServerErrorException('Barber not found');
+      }
+      await this.barberRepository.update(id, barber);
+      return 'Barber updated successfully';
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
-  async remove(id: string): Promise<void> {
-    // Find the barber with the given id and delete it
-    await this.barberRepository.delete(id);
+  async remove(id: ObjectId): Promise<void> {
+    try {
+      const barberExists = await this.barberRepository.findOneBy(id);
+      if (!barberExists) {
+        throw new InternalServerErrorException('Barber not found');
+      }
+      await this.barberRepository.delete(id);
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 }

@@ -9,6 +9,7 @@ import { Client } from './clients/entities';
 import { Service } from './services/entities';
 import { BarberController } from './barber/barber.controller';
 import { BarberService } from './barber/barber.service';
+import { AdminController } from './admin/admin.controller';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { BarberService } from './barber/barber.service';
     }),
     TypeOrmModule.forFeature([Admin, Client, Service, Barber, Appointment]),
   ],
-  controllers: [AppController, BarberController],
+  controllers: [AppController, BarberController, AdminController],
   providers: [AppService, BarberService],
 })
 export class AppModule {}

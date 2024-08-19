@@ -7,7 +7,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity()
+@Entity('barber')
 export class Barber {
   @ObjectIdColumn()
   id: ObjectId;
@@ -24,16 +24,13 @@ export class Barber {
   @Column({ default: 'barber' })
   role: string;
 
-  @Column()
+  @Column({ nullable: true })
   phone: string;
-
-  @Column()
-  specialty: string;
 
   @Column()
   state: string;
 
-  @Column()
+  @Column({ nullable: true })
   bio: string;
 
   @CreateDateColumn()
