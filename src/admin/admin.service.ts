@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Admin } from './entities';
-import { MongoRepository } from 'typeorm';
+import { MongoRepository, ObjectId } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
@@ -47,7 +47,8 @@ export class AdminService {
     }
   }
 
-  async remove(id: string): Promise<void> {
-    await this.adminRepository.delete(id);
+  async remove(id: ObjectId): Promise<string> {
+    await this.adminRepository.deleteOne(id);
+    return 'Admin removed successfully';
   }
 }

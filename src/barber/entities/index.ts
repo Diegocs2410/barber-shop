@@ -1,4 +1,5 @@
 import { Appointment } from 'src/appointments/entities';
+import { Client } from 'src/clients/entities';
 import {
   Column,
   CreateDateColumn,
@@ -43,4 +44,7 @@ export class Barber {
 
   @OneToMany(() => Appointment, appointment => appointment.barber)
   appointments: Appointment[];
+
+  @OneToMany(() => Client, client => client.barber)
+  clients: Client[];
 }

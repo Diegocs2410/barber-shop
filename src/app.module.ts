@@ -11,6 +11,8 @@ import { BarberController } from './barber/barber.controller';
 import { BarberService } from './barber/barber.service';
 import { AdminController } from './admin/admin.controller';
 import { AdminService } from './admin/admin.service';
+import { ClientsService } from './clients/clients.service';
+import { ClientsController } from './clients/clients.controller';
 
 @Module({
   imports: [
@@ -22,7 +24,7 @@ import { AdminService } from './admin/admin.service';
     }),
     TypeOrmModule.forFeature([Admin, Client, Service, Barber, Appointment]),
   ],
-  controllers: [AppController, BarberController, AdminController],
-  providers: [AppService, BarberService, AdminService],
+  controllers: [AppController, BarberController, AdminController, ClientsController],
+  providers: [AppService, BarberService, AdminService, ClientsService],
 })
 export class AppModule {}

@@ -1,9 +1,11 @@
+import { Barber } from 'src/barber/entities';
 import {
   Column,
   CreateDateColumn,
   Entity,
   ObjectId,
   ObjectIdColumn,
+  OneToOne,
   UpdateDateColumn,
 } from 'typeorm';
 
@@ -15,19 +17,19 @@ export class Client {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @Column()
   password: string;
 
-  @Column()
+  @Column({ default: 'client' })
   role: string;
 
   @Column()
   phone: string;
 
-  @Column()
+  @Column({ default: 'active' })
   state: string;
 
   @CreateDateColumn()
@@ -38,4 +40,7 @@ export class Client {
 
   @Column()
   updatedBy: string;
+
+  @OneToOne(() => Barber, barber => barber.clients)
+  barber: Barber;
 }

@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { Admin } from './entities';
+import { ObjectId } from 'typeorm';
 
 @Controller('api/v1/admin')
 export class AdminController {
@@ -35,7 +36,7 @@ export class AdminController {
   }
 
   @Delete(':id')
-  remove(id: string) {
+  remove(id: ObjectId) {
     return this.adminService.remove(id);
   }
 }
