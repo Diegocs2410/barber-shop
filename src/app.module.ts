@@ -14,6 +14,8 @@ import { AdminService } from './admin/admin.service';
 import { ClientsService } from './clients/clients.service';
 import { ClientsController } from './clients/clients.controller';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
+import { ServicesService } from './services/services.service';
+import { ServicesController } from './services/services.controller';
 
 @Module({
   imports: [
@@ -30,8 +32,9 @@ import { LoggerMiddleware } from './middlewares/logger.middleware';
     BarberController,
     AdminController,
     ClientsController,
+    ServicesController,
   ],
-  providers: [AppService, BarberService, AdminService, ClientsService],
+  providers: [AppService, BarberService, AdminService, ClientsService, ServicesService],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
