@@ -4,9 +4,9 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { hashPassword } from 'src/utils/hash-password.util';
 import { MongoRepository } from 'typeorm';
 import { Client } from './entities';
-import { hashPassword } from 'src/utils/hash-password.util';
 
 @Injectable()
 export class ClientsService {
@@ -45,18 +45,27 @@ export class ClientsService {
     }
   }
 
-  async update(id: string, client: Client): Promise<Client> {
+  async update(id: string, client: Client) {
     try {
+      const updatedClient = await this.clientRepository.findOneBy(id);
+      if (!updatedClient) {
+        throw new NotFoundException('Client not found');
+      }
       await this.clientRepository.update(id, client);
-      return client;
+      return 'Client updated successfully';
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  async remove(id: string): Promise<void> {
+  async remove(id: string): Promise<{ message: string; status: number }> {
     try {
+      const client = await this.clientRepository.findOneBy(id);
+      if (!client) {
+        throw new NotFoundException('Client not found');
+      }
       await this.clientRepository.delete(id);
+      return { message: 'Client removed successfully', status: 200 };
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
