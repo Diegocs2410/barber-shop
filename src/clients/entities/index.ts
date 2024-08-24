@@ -1,3 +1,4 @@
+import { IsEmail, IsNotEmpty, IsString, Length } from 'class-validator';
 import { Barber } from 'src/barber/entities';
 import {
   Column,
@@ -14,12 +15,17 @@ export class Client {
   @ObjectIdColumn()
   id: ObjectId;
 
+  @IsString()
+  @IsNotEmpty()
+  @Length(3, 50)
   @Column()
   name: string;
 
+  @IsEmail()
   @Column({ unique: true })
   email: string;
 
+  @IsNotEmpty()
   @Column()
   password: string;
 

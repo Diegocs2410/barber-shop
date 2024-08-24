@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Admin } from './admin/entities';
 import { AppController } from './app.controller';
@@ -13,6 +13,7 @@ import { AdminController } from './admin/admin.controller';
 import { AdminService } from './admin/admin.service';
 import { ClientsService } from './clients/clients.service';
 import { ClientsController } from './clients/clients.controller';
+import { LoggerMiddleware } from './middlewares/logger.middleware';
 
 @Module({
   imports: [
@@ -24,7 +25,16 @@ import { ClientsController } from './clients/clients.controller';
     }),
     TypeOrmModule.forFeature([Admin, Client, Service, Barber, Appointment]),
   ],
-  controllers: [AppController, BarberController, AdminController, ClientsController],
+  controllers: [
+    AppController,
+    BarberController,
+    AdminController,
+    ClientsController,
+  ],
   providers: [AppService, BarberService, AdminService, ClientsService],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}
