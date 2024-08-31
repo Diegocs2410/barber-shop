@@ -59,7 +59,9 @@ export class AdminService {
     return 'Admin removed successfully';
   }
 
-  async login(admin: Admin): Promise<Admin> {
+  async login(
+    admin: Admin,
+  ): Promise<Pick<Admin, 'id' | 'email' | 'name' | 'phone' | 'role'>> {
     try {
       const user = await this.adminRepository.findOneBy({
         email: admin.email,
@@ -74,7 +76,14 @@ export class AdminService {
       if (!isPasswordValid) {
         throw new NotFoundException('Invalid password');
       }
-      return user;
+
+      return {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        phone: user.phone,
+      };
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }

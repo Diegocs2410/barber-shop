@@ -27,6 +27,7 @@ export class AdminController {
 
   @Post()
   create(@Body() admin: Admin) {
+    console.log('🚀 ~ AdminController ~ create ~ admin:', admin);
     return this.adminService.create(admin);
   }
 

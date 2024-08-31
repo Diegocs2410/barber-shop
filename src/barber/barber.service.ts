@@ -1,7 +1,12 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MongoRepository, ObjectId } from 'typeorm';
 import { Barber } from './entities';
+import { comparePasswords } from 'src/utils/hash-password.util';
 
 @Injectable()
 export class BarberService {
@@ -21,7 +26,6 @@ export class BarberService {
     if (!barber.name || !barber.email || !barber.password) {
       throw new InternalServerErrorException('Missing required fields');
     }
-
     try {
       const barberExists = await this.barberRepository.findOne({
         where: { email: barber.email },
@@ -57,6 +61,36 @@ export class BarberService {
       await this.barberRepository.delete(id);
     } catch (error) {
       throw new InternalServerErrorException(error);
+    }
+  }
+
+  async login(
+    admin: Barber,
+  ): Promise<Pick<Barber, 'id' | 'email' | 'name' | 'phone' | 'role'>> {
+    try {
+      const user = await this.barberRepository.findOneBy({
+        email: admin.email,
+      });
+      if (!user) {
+        throw new NotFoundException('Admin not found');
+      }
+      const isPasswordValid = await comparePasswords(
+        admin.password,
+        user.password,
+      );
+      if (!isPasswordValid) {
+        throw new NotFoundException('Invalid password');
+      }
+
+      return {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        phone: user.phone,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
     }
   }
 }
