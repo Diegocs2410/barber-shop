@@ -6,6 +6,7 @@ import {
 import { Admin } from './entities';
 import { MongoRepository, ObjectId } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { comparePasswords, hashPassword } from 'src/utils/hash-password.util';
 
 @Injectable()
 export class AdminService {
@@ -31,7 +32,13 @@ export class AdminService {
   }
 
   async create(admin: Admin): Promise<Admin> {
-    return await this.adminRepository.save(admin);
+    try {
+      const hadhedPassword = await hashPassword(admin.password);
+      admin.password = hadhedPassword;
+      return await this.adminRepository.save(admin);
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
   }
 
   async update(id: string, admin: Admin): Promise<string> {
@@ -50,5 +57,26 @@ export class AdminService {
   async remove(id: ObjectId): Promise<string> {
     await this.adminRepository.deleteOne(id);
     return 'Admin removed successfully';
+  }
+
+  async login(admin: Admin): Promise<Admin> {
+    try {
+      const user = await this.adminRepository.findOneBy({
+        email: admin.email,
+      });
+      if (!user) {
+        throw new NotFoundException('Admin not found');
+      }
+      const isPasswordValid = await comparePasswords(
+        admin.password,
+        user.password,
+      );
+      if (!isPasswordValid) {
+        throw new NotFoundException('Invalid password');
+      }
+      return user;
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
   }
 }

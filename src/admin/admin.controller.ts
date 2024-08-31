@@ -39,4 +39,10 @@ export class AdminController {
   remove(id: ObjectId) {
     return this.adminService.remove(id);
   }
+
+  // Login Admin
+  @Post('login')
+  login(@Body() admin: Admin) {
+    return this.adminService.login(admin);
+  }
 }

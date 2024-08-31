@@ -34,7 +34,13 @@ import { ServicesController } from './services/services.controller';
     ClientsController,
     ServicesController,
   ],
-  providers: [AppService, BarberService, AdminService, ClientsService, ServicesService],
+  providers: [
+    AppService,
+    BarberService,
+    AdminService,
+    ClientsService,
+    ServicesService,
+  ],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
